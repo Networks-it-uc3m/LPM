@@ -7,19 +7,7 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type MeasureMethod func(neighborNodeIp string) float64
-
 type ServerMethod func()
-
-type Metric struct {
-	Name             string
-	NodeName         string
-	Ip               string
-	TestTimeInterval int
-	MetricId         string
-	method           MeasureMethod
-	value            float64
-}
 
 type LPMInstance struct {
 	NodeName string
@@ -54,10 +42,10 @@ func (lpmInstance *LPMInstance) SetNodeName(name string) {
 	lpmInstance.NodeName = name
 }
 
-func (lpmInstance *LPMInstance) AddMetric(metricName string, nodeName string, metricInterval int, neighborNodeIp string, measureMethod MeasureMethod) {
-	stringId := fmt.Sprintf("%s_%s:%s", metricName, lpmInstance.NodeName, nodeName)
-	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{metricName, nodeName, neighborNodeIp, metricInterval, stringId, measureMethod, 0.0})
-	lpmCollector := lpmExporterCollector(stringId)
+func (lpmInstance *LPMInstance) AddMetric(metricName string, targetNodeName string, metricInterval int, targetNodeIP string, measureMethod MeasureMethod) {
+	metricId := GenerateMetricId(metricName, lpmInstance.NodeName, targetNodeName)
+	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{Name: metricName, SourceNodeName: lpmInstance.NodeName, TargetNodeName: targetNodeName, TestTimeInterval: metricInterval, MetricId: metricId, method: measureMethod, value: 0.0})
+	lpmCollector := lpmExporterCollector(metricId)
 	lpmInstance.promReg.MustRegister(lpmCollector)
 }
 

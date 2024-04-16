@@ -28,8 +28,6 @@ func StartCollector() {
 			EnableOpenMetrics: false,
 		})
 
-	go RunExporter(time.Minute * 5)
-
 	http.Handle("/metrics", handler)
 
 	http.ListenAndServe(":8090", nil)
@@ -37,12 +35,12 @@ func StartCollector() {
 
 func (metric *Metric) RunPeriodicTests() {
 
-	log.Infof("Testing %s in network link between node %s and node %s", metric.Name, lpmInstance.NodeName, metric.NodeName)
+	log.Infof("Testing %s in network link between node %s and node %s", metric.Name, metric.SourceNodeName, metric.TargetNodeName)
 
 	if metric.TestTimeInterval != -1 {
 		for true {
-			metric.value = metric.method(metric.Ip)
-			log.Infof(" %s between node %s and node %s is %f with pointer %v ", metric.Name, lpmInstance.NodeName, metric.NodeName, metric.value, &metric.value)
+			metric.value = metric.method(metric.TargetNodeIp)
+			log.Infof(" %s between node %s and node %s is %f with pointer %v ", metric.Name, metric.SourceNodeName, metric.TargetNodeIp, metric.value, &metric.value)
 
 			time.Sleep(time.Duration(metric.TestTimeInterval) * time.Minute)
 		}
