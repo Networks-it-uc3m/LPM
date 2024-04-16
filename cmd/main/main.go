@@ -4,7 +4,7 @@ import (
 
 	// Core of the application has been isolated from this code so its easier to update and mantain. It shouldn't be required to understand it if you want to
 	// add more metrics, but if youre curious about the implementation, feel free to read the code :)
-	"github.com/Tjaarda1/collector"
+	"github.com/Networks-it-uc3m/LPM/pkg/collector"
 )
 
 func main() {
