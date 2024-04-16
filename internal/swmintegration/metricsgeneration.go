@@ -1,6 +1,12 @@
 package swmintegration
 
-func (networkTopology *NetworkTopology) FillTopologyWithMetrics(metricId string, metricValue float64) error {
+type Metric struct {
+	SourceNode string
+	TargetNode string
+	metricType string
+	value      float64
+}
 
-	return nil
+func ExtractMetric(metricId string, metricValue float64) {
+
 }

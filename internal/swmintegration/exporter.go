@@ -1,6 +1,32 @@
 package swmintegration
 
-import metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+import (
+	"time"
+
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+)
+
+func RunExporter(duration time.Duration) {
+
+	for {
+
+		swmClient := SWMClient{}
+
+		swmClient.NewClient()
+
+		//networkTopology := databaseClient.Get("topology")
+		networkTopology := HardcodeTopology()
+
+		// for _, metric := promclient.GetMetrics() {
+		// 	networkTopology.FillTopologyWithMetric()
+		// }
+		//networkTopology.FillTopologyWithMetrics()
+
+		swmClient.ExportCRD("he-codeco-swm", networkTopology)
+
+		time.Sleep(duration)
+	}
+}
 
 func HardcodeTopology() NetworkTopology {
 	networkTopology := NetworkTopology{
