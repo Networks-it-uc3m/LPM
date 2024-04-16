@@ -28,6 +28,8 @@ func StartCollector() {
 			EnableOpenMetrics: false,
 		})
 
+	go RunExporter(time.Minute * 5)
+
 	http.Handle("/metrics", handler)
 
 	http.ListenAndServe(":8090", nil)

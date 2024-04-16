@@ -1,22 +1,22 @@
 // Package collector is the core instrumentation package. Modifications shouldnt be needed.
-// The purpose of LPM is to easily integrate a propagation measurement app with the prometheus project. LPMCore doesn't provide any measurment methods,
+// The purpose of LPM is to easily integrate a propagation measurement app with the prometheus project. Collector doesn't provide any measurment methods,
 // but it provides an abstraction layer where adding own custom network metrics is easier than ever.
 //
 // It provides a singleton instance of LPMInstance, which itself has the metric data taken from the measurements,
-// the information of the neighbor nodes and the prometheus registry. LPMCore takes care of creating the necesary prometheus
+// the information of the neighbor nodes and the prometheus registry. Collector takes care of creating the necesary prometheus
 // collectors, running the measurements in the specified intervals between the specified nodes and serving them over http in localhost:8090/metrics.
 //
-// # Using LPMCore
+// # Using Collector
 //
-// Three main things should be implemented when using LPMCore. Here we provide an example of usage:
+// Three main things should be implemented when using Collector. Here we provide an example of usage:
 //
 // ## Implementing measurement methods
-// As LPMCore doesnt provide any measurement method, an implementation must be added for every metric that you want to take.
+// As Collector doesnt provide any measurement method, an implementation must be added for every metric that you want to take.
 // The measurement methods should have the following syntax:
 // 'func measureMetric(neighborIP string) float64'
 // Where measureMetric is the unique name of the method you are implementing (for example measureRtt or measureJitter)
 // As argument it should provide only one, as a string, that it should be used for specifying the ip we want to run the test against,
-// as LPMCore will later call this method by using that field. The return should be a float64 always, which contains the result of the final test. Errors should be managed inside
+// as Collector will later call this method by using that field. The return should be a float64 always, which contains the result of the final test. Errors should be managed inside
 // the method. If an error occur, an invalid value should be used. For example, if while measuring rtt you get an error, you may return a negative value so when
 // the metric is logged, the value can be interpreted as such.
 // Here a basic example of a measuring method:
