@@ -16,8 +16,8 @@ type MetricConfiguration struct {
 }
 
 type NodeConfig struct {
-	NodeName       string                `json:"Nodename"`
-	NeighbourNodes []MetricConfiguration `json:"NeighbourNodes"`
+	NodeName              string                `json:"Nodename"`
+	MetricsNeighbourNodes []MetricConfiguration `json:"MetricsNeighbourNodes"`
 }
 
 func loadConfiguration() (NodeConfig, error) {

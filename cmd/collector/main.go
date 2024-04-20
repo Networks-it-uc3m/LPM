@@ -19,7 +19,7 @@ func main() {
 	lpmInstance.SetNodeName(configuration.NodeName)
 
 	// For every neighbour node defined in the configuration file, we add a metric. Note: If the metric wasn't added, the interval will be set to -1, and the lpmInstance won't run the test.
-	for _, neighbourNode := range configuration.NeighbourNodes {
+	for _, neighbourNode := range configuration.MetricsNeighbourNodes {
 
 		// About the AddMetric method:
 		// The first parameter is the name of the metric, it should be unique between different metrics as it will help us identify what was measured.
