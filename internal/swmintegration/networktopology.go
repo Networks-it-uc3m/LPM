@@ -145,13 +145,6 @@ func (networkTopology NetworkTopology) GetUnstructuredData() *unstructured.Unstr
 
 }
 
-type Metric struct {
-	Name           string
-	SourceNodeName string
-	TargetNodeName string
-	Value          string
-}
-
 func (networkTopology *NetworkTopology) FillTopologyWithMetric(metric Metric) error {
 
 	return nil
