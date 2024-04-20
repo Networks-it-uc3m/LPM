@@ -12,7 +12,6 @@ spec:
       labels:
         app: prometheus
     spec:          
-      hostNetwork: true
       containers:
         - name: prometheus
           image: prom/prometheus:v2.30.3
@@ -26,6 +25,9 @@ spec:
               mountPath: /etc/prometheus
             - name: data-volume
               mountPath: /prometheus
+        - name: exporter
+          image: alpine
+          command: ["/bin/ash", "-c", "sleep infinity & wait"]
       volumes:
         - name: config-volume
           configMap:
