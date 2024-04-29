@@ -1,4 +1,4 @@
-{{- range .Values.nodes }}
+{{- range .Values.global.nodes }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -13,7 +13,7 @@ spec:
       labels:
         app: {{ .name }}-lpm
       annotations:
-        l2sm/networks: '[{"name": "{{ $.Values.network.name }}", "ips":["{{ .ip }}"]}]'
+        l2sm/networks: '[{"name": "{{ $.Values.global.network.name }}", "ips":["{{ .ip }}"]}]'
     spec:
       containers:
       - name: lpm-container
