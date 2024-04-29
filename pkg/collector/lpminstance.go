@@ -44,7 +44,7 @@ func (lpmInstance *LPMInstance) SetNodeName(name string) {
 
 func (lpmInstance *LPMInstance) AddMetric(metricName string, targetNodeName string, metricInterval int, targetNodeIP string, measureMethod MeasureMethod) {
 	metricId := GenerateMetricId(metricName, lpmInstance.NodeName, targetNodeName)
-	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{Name: metricName, SourceNodeName: lpmInstance.NodeName, TargetNodeName: targetNodeName, TestTimeInterval: metricInterval, MetricId: metricId, method: measureMethod, value: 0.0})
+	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{Name: metricName, SourceNodeName: lpmInstance.NodeName, TargetNodeName: targetNodeName, TargetNodeIp: targetNodeIP, TestTimeInterval: metricInterval, MetricId: metricId, method: measureMethod, value: 0.0})
 	lpmCollector := lpmExporterCollector(metricId)
 	lpmInstance.promReg.MustRegister(lpmCollector)
 }

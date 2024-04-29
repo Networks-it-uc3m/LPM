@@ -17,7 +17,7 @@ func measureRtt(neighborIP string) float64 {
 
 	out, err := exec.Command("ping", neighborIP, "-c", "10", "-q").Output()
 	if err != nil {
-		log.Errorf("Could not measure Rtt. Ping responds: %v", err)
+		log.Errorf("Could not measure Rtt against ip %s. Ping responds: %v", neighborIP, err)
 		return 0
 	}
 	//fmt.Println(string(out[:]))

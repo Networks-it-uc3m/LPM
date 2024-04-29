@@ -13,7 +13,6 @@ func StartCollector() {
 	for index := range lpmInstance.Metrics {
 		go func(lpmDataIndex int) {
 			lpmInstance.Metrics[lpmDataIndex].RunPeriodicTests()
-
 		}(index)
 	}
 
@@ -39,6 +38,7 @@ func (metric *Metric) RunPeriodicTests() {
 
 	if metric.TestTimeInterval != -1 {
 		for true {
+
 			metric.value = metric.method(metric.TargetNodeIp)
 			log.Infof(" %s between node %s and node %s is %f with pointer %v ", metric.Name, metric.SourceNodeName, metric.TargetNodeIp, metric.value, &metric.value)
 
