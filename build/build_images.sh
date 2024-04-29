@@ -25,17 +25,23 @@ push_image() {
 # Option 1: Build image
 if [ "$1" == "build" ]; then
   build_image "lpm-collector" "collector"
+  build_image "lpm-exporter" "swm_exporter"
+
   echo "Images have been built successfully."
 
 # Option 2: Push image
 elif [ "$1" == "push" ]; then
   push_image "lpm-collector"
+  push_image "lpm-exporter"
+
   echo "Images have been pushed successfully."
 
 # Option 3: Build and push image
 elif [ "$1" == "build_push" ]; then
   build_image "lpm-collector" "collector"
   push_image "lpm-collector"
+  build_image "lpm-exporter" "swm_exporter"
+  push_image "lpm-exporter"
   echo "Images have been built and pushed successfully."
 
 # Invalid option
