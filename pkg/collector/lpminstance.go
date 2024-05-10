@@ -43,8 +43,10 @@ func (lpmInstance *LPMInstance) SetNodeName(name string) {
 }
 
 func (lpmInstance *LPMInstance) AddMetric(metricName string, targetNodeName string, metricInterval int, targetNodeIP string, measureMethod MeasureMethod) {
-	metricId := GenerateMetricId(metricName, lpmInstance.NodeName, targetNodeName)
-	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{Name: metricName, SourceNodeName: lpmInstance.NodeName, TargetNodeName: targetNodeName, TargetNodeIp: targetNodeIP, TestTimeInterval: metricInterval, MetricId: metricId, method: measureMethod, value: 0.0})
+
+	metricId := MetricId{Name: metricName, SourceNodeName: lpmInstance.NodeName, TargetNodeName: targetNodeName}
+	metricId.GenerateMetricId()
+	lpmInstance.Metrics = append(lpmInstance.Metrics, Metric{MetricData: MetricData{metricId, 0.0}, TargetNodeIp: targetNodeIP, TestTimeInterval: metricInterval, method: measureMethod})
 	lpmCollector := lpmExporterCollector(metricId)
 	lpmInstance.promReg.MustRegister(lpmCollector)
 }
@@ -53,9 +55,9 @@ func (lpmInstance *LPMInstance) AddServer(serverMethod ServerMethod) {
 	lpmInstance.Servers = append(lpmInstance.Servers, serverMethod)
 }
 
-func GetMetricValueFromId(metricId string) float64 {
+func GetMetricValue(metricName, sourceNode, targetNode string) float64 {
 	for _, metric := range lpmInstance.Metrics {
-		if metric.MetricId == metricId {
+		if metric.Name == metricName && metric.SourceNodeName == sourceNode && metric.TargetNodeName == targetNode {
 			return metric.value
 		}
 	}

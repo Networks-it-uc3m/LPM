@@ -40,7 +40,7 @@ func (metric *Metric) RunPeriodicTests() {
 		for true {
 
 			metric.value = metric.method(metric.TargetNodeIp)
-			log.Infof(" %s between node %s and node %s is %f with pointer %v ", metric.Name, metric.SourceNodeName, metric.TargetNodeIp, metric.value, &metric.value)
+			log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.value)
 
 			time.Sleep(time.Duration(metric.TestTimeInterval) * time.Minute)
 		}

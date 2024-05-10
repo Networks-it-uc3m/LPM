@@ -93,7 +93,7 @@ func measureJitter(neighborIP string) float64 {
 func measureThroughput(neighborIP string) float64 {
 	log.Infof("Measuring throughput")
 
-	out, err := exec.Command("iperf3", "-c", neighborIP).Output()
+	out, err := exec.Command("iperf3", "-c", neighborIP, "--format", "k").Output()
 	if err != nil {
 		log.Errorf("Could not measure Throughput. %v", err)
 		return 0
@@ -102,7 +102,7 @@ func measureThroughput(neighborIP string) float64 {
 
 	// Define the regular expression patterns
 	senderPattern := "receiver"
-	msPattern := "[0-9.]+ Gbits/sec"
+	msPattern := "[0-9.]+ Kbits/sec"
 
 	// Compile the regular expressions
 	senderRegex := regexp.MustCompile(senderPattern)
@@ -116,7 +116,7 @@ func measureThroughput(neighborIP string) float64 {
 			msMatch := msRegex.FindStringSubmatch(line)
 
 			log.Infof("Throughput between two links: %s", msMatch)
-			throughput, err := strconv.ParseFloat(strings.TrimSuffix(msMatch[0], " Gbits/sec"), 64)
+			throughput, err := strconv.ParseFloat(strings.TrimSuffix(msMatch[0], " Kbits/sec"), 64)
 			if err != nil {
 				log.Errorf("Could not parse the throughput metric. %v", err)
 			}

@@ -26,9 +26,9 @@ func main() {
 		// The foruth parameter is the IP of the neighbor node, that will be used as an argument for the measurement method. Should be as a string.
 		// The fifth parameter is the function itself. should be of with the following layout 'func measure(neighborIP string) float64' You have to implement it, and I recommend doing so
 		// in the metricmethods.go section, in order to keep the code clean
-		lpmInstance.AddMetric("net_rtt", neighbourNode.Name, neighbourNode.RTT, neighbourNode.IP, measureRtt)
-		lpmInstance.AddMetric("net_jitter", neighbourNode.Name, neighbourNode.Jitter, neighbourNode.IP, measureJitter)
-		lpmInstance.AddMetric("net_throughput", neighbourNode.Name, neighbourNode.Throughput, neighbourNode.IP, measureThroughput)
+		lpmInstance.AddMetric("net_rtt_ms", neighbourNode.Name, neighbourNode.RTT, neighbourNode.IP, measureRtt)
+		lpmInstance.AddMetric("net_jitter_ms", neighbourNode.Name, neighbourNode.Jitter, neighbourNode.IP, measureJitter)
+		lpmInstance.AddMetric("net_throughput_kbps", neighbourNode.Name, neighbourNode.Throughput, neighbourNode.IP, measureThroughput)
 	}
 
 	lpmInstance.AddServer(iperfTCP)

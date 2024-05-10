@@ -9,20 +9,26 @@ import (
 //Note you can also include fields of other types if they provide utility
 //but we just won't be exposing them as metrics.
 type lpmCollector struct {
-	metric   *prometheus.Desc
-	metricID string
+	metric           *prometheus.Desc
+	metricName       string
+	sourceNode       string
+	targetNode       string
+	metricIdentifier string
 }
 
 //You must create a constructor for you collector that
 //initializes every descriptor and returns a pointer to the collector
-func lpmExporterCollector(metricId string) *lpmCollector {
+func lpmExporterCollector(metricId MetricId) *lpmCollector {
 	return &lpmCollector{
-		metric: prometheus.NewDesc(metricId,
+		metric: prometheus.NewDesc(metricId.Identifier,
 			"",
-			nil, nil,
+			[]string{"source_node", "target_node"}, nil,
 		),
 
-		metricID: metricId,
+		metricName:       metricId.Name,
+		sourceNode:       metricId.SourceNodeName,
+		targetNode:       metricId.TargetNodeName,
+		metricIdentifier: metricId.Identifier,
 	}
 }
 
@@ -40,10 +46,10 @@ func (collector *lpmCollector) Collect(ch chan<- prometheus.Metric) {
 	//Implement logic here to determine proper metric value to return to prometheus
 	//for each descriptor or call other functions that do so.
 
-	metricValue := GetMetricValueFromId(collector.metricID)
+	metricValue := GetMetricValue(collector.metricName, collector.sourceNode, collector.targetNode)
 	//Write latest value for each metric in the prometheus metric channel.
 	//Note that you can pass CounterValue, GaugeValue, or UntypedValue types here.
 
-	ch <- prometheus.MustNewConstMetric(collector.metric, prometheus.CounterValue, metricValue)
+	ch <- prometheus.MustNewConstMetric(collector.metric, prometheus.CounterValue, metricValue, collector.sourceNode, collector.targetNode)
 
 }
