@@ -15,6 +15,7 @@ spec:
       annotations:
         l2sm/networks: '[{"name": "{{ $.Values.global.network.name }}", "ips":["{{ .ip }}"]}]'
     spec:
+      nodeName: {{ .name }}
       containers:
       - name: lpm-container
         image: alexdecb/lpm-collector:1.1

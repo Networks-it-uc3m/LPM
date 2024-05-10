@@ -27,8 +27,14 @@ spec:
             - name: data-volume
               mountPath: /prometheus
         - name: exporter
-          image: alpine
-          command: ["/bin/ash", "-c", "sleep infinity & wait"]
+          image: alexdecb/lpm-exporter:1.1
+          imagePullPolicy: Always
+          # command: ["/bin/ash", "-c", "sleep infinity & wait"]
+          # args:
+          #   - "--topology-namespace=$TOPOLOGY_NAMESPACE"
+          env:
+            - name: TOPOLOGY_NAMESPACE
+              value: {{ .Values.topologyNamespace}}
       volumes:
         - name: config-volume
           configMap:
