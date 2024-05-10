@@ -30,6 +30,14 @@ func (swmClient *SWMClient) NewClient() error {
 	if err != nil {
 		panic(err.Error())
 	}
+	// Uncomment the following lines to use out-of-cluster configuration for debugging
+	// This requires a valid kubeconfig file typically found at ~/.kube/config
+
+	// config, err := clientcmd.BuildConfigFromFlags("", "/home/alex/.kube/config")
+	// if err != nil {
+	// 	panic(err.Error())
+	// }
+
 	// creates the clientset
 	clientset, err := dynamic.NewForConfig(config)
 
@@ -39,7 +47,8 @@ func (swmClient *SWMClient) NewClient() error {
 
 	schemaGVR := schema.GroupVersionResource{Group: "qos-scheduler.siemens.com", Version: "v1alpha1", Resource: "networktopologies"}
 
-	swmClient = &SWMClient{SchemaGVR: schemaGVR, DynamicClient: clientset}
+	swmClient.DynamicClient = clientset
+	swmClient.SchemaGVR = schemaGVR
 
 	return nil
 }

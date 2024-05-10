@@ -6,7 +6,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
-func RunExporter(duration time.Duration) {
+func RunExporter(duration time.Duration, namespace string) {
 
 	for {
 
@@ -22,7 +22,7 @@ func RunExporter(duration time.Duration) {
 		// }
 		//networkTopology.FillTopologyWithMetrics()
 
-		swmClient.ExportCRD("he-codeco-swm", networkTopology)
+		swmClient.ExportCRD(namespace, networkTopology)
 
 		time.Sleep(duration)
 	}
@@ -38,8 +38,8 @@ func HardcodeTopology() NetworkTopology {
 			Name: "l2sm-sample-cluster",
 		},
 		Spec: NetworkTopologySpec{
-			NetworkImplementation: "l2sm-network",
-			PhysicalBase:          "logical-network",
+			NetworkImplementation: "L2SM",
+			PhysicalBase:          "K8s",
 			Nodes: []TopologyNodeSpec{
 				{Name: "node-a", Type: COMPUTE_NODE},
 				{Name: "node-b", Type: COMPUTE_NODE},
