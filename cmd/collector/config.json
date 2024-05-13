@@ -1,11 +1,8 @@
 {
     "Nodename":"NodeA",
-    "NeighbourNodes": [
+    "MetricsNeighbourNodes": [
         {
-        "name":"l2sm2", "ip": "10.0.2.4", "jitterInterval":1, "throughputInterval":20, "rttInterval":3
-        },
-        {
-        "name":"l2sm3","ip": "10.0.2.6", "rttInterval":20, "throughputInterval":20, "otdInterval":50
+        "name":"l2s-m2", "ip": "10.0.2.5", "jitterInterval":1, "throughputInterval":20, "rttInterval":3
         }
     ]
 }

@@ -39,8 +39,8 @@ func (metric *Metric) RunPeriodicTests() {
 	if metric.TestTimeInterval != -1 {
 		for true {
 
-			metric.value = metric.method(metric.TargetNodeIp)
-			log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.value)
+			metric.Value = metric.method(metric.TargetNodeIp)
+			log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
 
 			time.Sleep(time.Duration(metric.TestTimeInterval) * time.Minute)
 		}

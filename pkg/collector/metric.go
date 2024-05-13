@@ -18,7 +18,7 @@ type MetricId struct {
 }
 type MetricData struct {
 	MetricId
-	value float64
+	Value float64
 }
 type Metric struct {
 	MetricData

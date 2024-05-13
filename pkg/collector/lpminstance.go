@@ -58,7 +58,7 @@ func (lpmInstance *LPMInstance) AddServer(serverMethod ServerMethod) {
 func GetMetricValue(metricName, sourceNode, targetNode string) float64 {
 	for _, metric := range lpmInstance.Metrics {
 		if metric.Name == metricName && metric.SourceNodeName == sourceNode && metric.TargetNodeName == targetNode {
-			return metric.value
+			return metric.Value
 		}
 	}
 	return 0.0
