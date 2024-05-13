@@ -1,26 +1,37 @@
 package swmintegration
 
 import (
+	"fmt"
 	"time"
 
+	"github.com/Networks-it-uc3m/LPM/pkg/collector"
+	"github.com/Networks-it-uc3m/LPM/pkg/prometheusclient"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
 func RunExporter(duration time.Duration, namespace string) {
 
+	promClient := prometheusclient.NewClient("localhost:9090")
+	swmClient := SWMClient{}
+
+	swmClient.NewClient()
+
+	var metricsArray []collector.MetricData
 	for {
 
-		swmClient := SWMClient{}
-
-		swmClient.NewClient()
+		metricsArray = promClient.GetNetworkMetrics()
 
 		//networkTopology := databaseClient.Get("topology")
-		networkTopology := HardcodeTopology()
+		// networkTopology := HardcodeTopology()
 
 		// for _, metric := promclient.GetMetrics() {
 		// 	networkTopology.FillTopologyWithMetric()
 		// }
-		//networkTopology.FillTopologyWithMetrics()
+
+		// networkTopology.FillTopologyWithMetrics(metricsArray)
+		fmt.Println("injecting metrics")
+		fmt.Println(metricsArray)
+		networkTopology, _ := GenerateTopologyFromMetrics(metricsArray)
 
 		swmClient.ExportCRD(namespace, networkTopology)
 

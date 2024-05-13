@@ -2,7 +2,10 @@ package swmintegration
 
 import (
 	"encoding/json"
+	"fmt"
+	"hash/fnv"
 
+	"github.com/Networks-it-uc3m/LPM/pkg/collector"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/apis/meta/v1/unstructured"
 	"k8s.io/apimachinery/pkg/runtime/schema"
@@ -145,7 +148,79 @@ func (networkTopology NetworkTopology) GetUnstructuredData() *unstructured.Unstr
 
 }
 
-func (networkTopology *NetworkTopology) FillTopologyWithMetric(metric Metric) error {
+func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTopology, error) {
+	networkTopology := NetworkTopology{
+		TypeMeta: metav1.TypeMeta{
+			APIVersion: "qos-scheduler.siemens.com/v1alpha1",
+			Kind:       "NetworkTopology",
+		},
+		ObjectMeta: metav1.ObjectMeta{
+			Name: "l2sm-sample-cluster",
+		},
+		Spec: NetworkTopologySpec{
+			NetworkImplementation: "L2SM",
+			PhysicalBase:          "K8s",
+		},
+	}
 
-	return nil
+	nodeMap := make(map[string]bool)
+	linkMap := make(map[string]*TopologyLinkSpec)
+
+	for _, metric := range metricArray {
+		// Ensure node entries are unique and create them if they don't exist
+		if !nodeMap[metric.SourceNodeName] {
+			networkTopology.Spec.Nodes = append(networkTopology.Spec.Nodes, TopologyNodeSpec{
+				Name: metric.SourceNodeName,
+				Type: COMPUTE_NODE,
+			})
+			nodeMap[metric.SourceNodeName] = true
+		}
+
+		if !nodeMap[metric.TargetNodeName] {
+
+			networkTopology.Spec.Nodes = append(networkTopology.Spec.Nodes, TopologyNodeSpec{
+				Name: metric.TargetNodeName,
+				Type: COMPUTE_NODE,
+			})
+			nodeMap[metric.TargetNodeName] = true
+		}
+
+		linkKey := linkHash(TopologyLinkSpec{Source: metric.SourceNodeName, Target: metric.TargetNodeName})
+		link, exists := linkMap[linkKey]
+
+		if !exists {
+			link = &TopologyLinkSpec{
+				Source: metric.SourceNodeName,
+				Target: metric.TargetNodeName,
+			}
+			linkMap[linkKey] = link
+		}
+
+		switch metric.Name {
+		case "net_rtt_ms":
+			latencyNanos := fmt.Sprintf("%fe9", metric.Value) // Convert ms to ns
+			link.Capabilities.LatencyNanos = latencyNanos
+		case "net_throughput_kbps":
+			bandWidthBits := fmt.Sprintf("%fM", metric.Value) // Convert kbps to Mbps
+			link.Capabilities.BandWidthBits = bandWidthBits
+		default:
+			fmt.Printf("Metric not found: %s\n", metric.Name)
+		}
+	}
+
+	// Convert the link map to a slice for the topology spec
+	for _, link := range linkMap {
+		networkTopology.Spec.Links = append(networkTopology.Spec.Links, *link)
+	}
+
+	return networkTopology, nil
+}
+
+func linkHash(link TopologyLinkSpec) string {
+	hashString := fmt.Sprintf("%s%s", link.Source, link.Target)
+	hash := fnv.New32() // Using FNV hash for a compact hash, but still 32 bits
+	hash.Write([]byte(hashString))
+	sum := hash.Sum32()
+	// Encode the hash as a base32 string and take the first 4 characters
+	return fmt.Sprintf("%04x", sum) // H
 }
