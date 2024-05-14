@@ -8,7 +8,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/client-go/dynamic"
-	"k8s.io/client-go/tools/clientcmd"
+	"k8s.io/client-go/rest"
 )
 
 // Uses ExporterClient interface
@@ -27,12 +27,12 @@ func (swmClient *SWMClient) GetDynamicClient() dynamic.DynamicClient {
 func (swmClient *SWMClient) NewClient() error {
 
 	// creates the in-cluster config
-	// config, err := rest.InClusterConfig()
+	config, err := rest.InClusterConfig()
 
 	// Uncomment the following lines to use out-of-cluster configuration for debugging
 	// This requires a valid kubeconfig file typically found at ~/.kube/config
 
-	config, err := clientcmd.BuildConfigFromFlags("", "/home/alex/.kube/config")
+	// config, err := clientcmd.BuildConfigFromFlags("", "/home/alex/.kube/config")
 
 	if err != nil {
 		panic(err.Error())
@@ -58,7 +58,7 @@ func (swmClient *SWMClient) ExportCRD(namespace string, networkTopology exporter
 	unstructuredObj := networkTopology.GetUnstructuredData()
 
 	// sfmt.Println(unstructuredObj)
-	_, error := swmClient.DynamicClient.Resource(swmClient.SchemaGVR).Namespace(namespace).Create(context.Background(), unstructuredObj, metav1.CreateOptions{})
+	_, error := swmClient.DynamicClient.Resource(swmClient.SchemaGVR).Namespace(namespace).Apply(context.Background(), unstructuredObj.GetName(), unstructuredObj, metav1.ApplyOptions{})
 
 	fmt.Println(error)
 }
