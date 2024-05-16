@@ -17,6 +17,7 @@ func RunExporter(duration time.Duration, namespace string) {
 	swmClient.NewClient()
 
 	var metricsArray []collector.MetricData
+	time.Sleep(time.Second * 20)
 	for {
 
 		metricsArray = promClient.GetNetworkMetrics()

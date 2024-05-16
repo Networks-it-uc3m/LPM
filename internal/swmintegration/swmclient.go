@@ -58,7 +58,14 @@ func (swmClient *SWMClient) ExportCRD(namespace string, networkTopology exporter
 	unstructuredObj := networkTopology.GetUnstructuredData()
 
 	// sfmt.Println(unstructuredObj)
-	_, error := swmClient.DynamicClient.Resource(swmClient.SchemaGVR).Namespace(namespace).Apply(context.Background(), unstructuredObj.GetName(), unstructuredObj, metav1.ApplyOptions{})
+	_, error := swmClient.DynamicClient.Resource(swmClient.SchemaGVR).Namespace(namespace).Apply(
+		context.Background(),
+		unstructuredObj.GetName(),
+		unstructuredObj,
+		metav1.ApplyOptions{
+			FieldManager: "lpm-module",
+		},
+	)
 
 	fmt.Println(error)
 }

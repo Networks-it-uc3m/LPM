@@ -36,6 +36,7 @@ type TopologyLinkCapabilities struct {
 }
 
 type TopologyLinkSpec struct {
+	Name   string `json:"name"`
 	Source string `json:"source"`
 
 	Target       string                   `json:"target"`
@@ -98,7 +99,7 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 			Kind:       "NetworkTopology",
 		},
 		ObjectMeta: metav1.ObjectMeta{
-			Name: "l2sm-sample-cluster",
+			Name: "l2sm-overlay",
 		},
 		Spec: NetworkTopologySpec{
 			NetworkImplementation: "L2SM",
@@ -116,6 +117,13 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 				Name: metric.SourceNodeName,
 				Type: COMPUTE_NODE,
 			})
+			networkTopology.Spec.Links = append(networkTopology.Spec.Links, TopologyLinkSpec{
+				Source: metric.SourceNodeName,
+				Target: metric.SourceNodeName,
+				Name:   linkHash(TopologyLinkSpec{Source: metric.SourceNodeName, Target: metric.SourceNodeName}),
+				Capabilities: TopologyLinkCapabilities{
+					OtherCapabilities: make(map[string]string),
+				}})
 			nodeMap[metric.SourceNodeName] = true
 		}
 
@@ -125,6 +133,13 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 				Name: metric.TargetNodeName,
 				Type: COMPUTE_NODE,
 			})
+			networkTopology.Spec.Links = append(networkTopology.Spec.Links, TopologyLinkSpec{
+				Source: metric.TargetNodeName,
+				Target: metric.TargetNodeName,
+				Name:   linkHash(TopologyLinkSpec{Source: metric.TargetNodeName, Target: metric.TargetNodeName}),
+				Capabilities: TopologyLinkCapabilities{
+					OtherCapabilities: make(map[string]string),
+				}})
 			nodeMap[metric.TargetNodeName] = true
 		}
 
@@ -133,8 +148,12 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 
 		if !exists {
 			link = &TopologyLinkSpec{
+				Name:   linkKey,
 				Source: metric.SourceNodeName,
 				Target: metric.TargetNodeName,
+				Capabilities: TopologyLinkCapabilities{
+					OtherCapabilities: make(map[string]string),
+				},
 			}
 			linkMap[linkKey] = link
 		}
@@ -142,10 +161,10 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 		if metric.Value != 0 {
 			switch metric.Name {
 			case "net_rtt_ms":
-				latencyNanos := fmt.Sprintf("%fe9", metric.Value) // Convert ms to ns
+				latencyNanos := fmt.Sprintf("%f", metric.Value) // save in miliseconds
 				link.Capabilities.LatencyNanos = latencyNanos
 			case "net_throughput_kbps":
-				bandWidthBits := fmt.Sprintf("%fM", metric.Value) // Convert kbps to Mbps
+				bandWidthBits := fmt.Sprintf("%fM", metric.Value*0.0009765625) // From kbps to Mbps
 				link.Capabilities.BandWidthBits = bandWidthBits
 			default:
 				//fmt.Printf("Metric not found: %s\n", metric.Name)
