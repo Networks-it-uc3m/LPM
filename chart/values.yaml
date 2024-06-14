@@ -1,13 +1,19 @@
 global:
   nodes:
-    - name: l2sm2
+    - name: test-l2sm-uc3m-polito-1
       ip: 10.0.0.2/24
       metrics:
         rttInterval: 10
         throughputInterval: 20
         jitterInterval: 5
-    - name: l2sm1
+    - name: test-l2sm-uc3m-polito-2
       ip: 10.0.0.3/24
+      metrics:
+        rttInterval: 10
+        throughputInterval: 20
+        jitterInterval: 5
+    - name: test-l2sm-uc3m-polito-3
+      ip: 10.0.0.4/24
       metrics:
         rttInterval: 10
         throughputInterval: 20
@@ -15,4 +21,3 @@ global:
   network:
     name: lpm-network
   namespace: default
-  
