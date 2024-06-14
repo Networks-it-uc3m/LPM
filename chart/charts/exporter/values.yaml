@@ -13,4 +13,4 @@
 #       jitterInterval: 5
 # network:
 #   name: lpm-network
-topologyNamespace: network-demo-namespace
+topologyNamespace: network-l2sm-namespace
