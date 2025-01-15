@@ -18,7 +18,7 @@ COPY --from=build /usr/local/bin/lpm-collector .
 
 
 RUN apt-get update && \
-    apt-get install -y iputils-ping iperf3
+    apt-get install -y iputils-ping iperf3 tcpdump
     
 
 CMD ["lpm-collector"]
