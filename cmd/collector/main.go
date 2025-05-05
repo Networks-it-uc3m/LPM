@@ -15,6 +15,7 @@ func main() {
 	// We set the instance node name. This is useful for the correct identification of the metrics.
 	lpmInstance.SetNodeName(configuration.NodeName)
 
+	lpmInstance.SetSpreadFactor(configuration.SpreadFactor)
 	// For every neighbour node defined in the configuration file, we add a metric. Note: If the metric wasn't added, the interval will be set to -1, and the lpmInstance won't run the test.
 	for _, neighbourNode := range configuration.MetricsNeighbourNodes {
 
