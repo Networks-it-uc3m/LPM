@@ -2,7 +2,7 @@
 set -e
 
 # Set environment variables
-export VERSION="1.1.1"
+export VERSION="1.2.1"
 export DOCKERHUB_REPO="alexdecb"
 export PLATFORMS="linux/amd64,linux/arm64"
 
