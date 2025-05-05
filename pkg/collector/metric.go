@@ -24,6 +24,7 @@ type Metric struct {
 	MetricData
 	TargetNodeIp     string
 	TestTimeInterval int
+	SpreadFactor     float64
 	MetricId         string
 	method           MeasureMethod
 }

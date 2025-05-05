@@ -1,6 +1,7 @@
 package collector
 
 import (
+	"math"
 	"math/rand"
 	"net/http"
 	"time"
@@ -35,26 +36,32 @@ func StartCollector() {
 
 func (metric *Metric) RunPeriodicTests() {
 
+	if metric.TestTimeInterval == -1 {
+		return
+	}
+
 	log.Infof("Testing %s in network link between node %s and node %s", metric.Name, metric.SourceNodeName, metric.TargetNodeName)
 
-	if metric.TestTimeInterval != -1 {
-		for {
-			for i := 0; i < 3; i++ {
-				randomDelay := time.Duration(rand.Intn(120)) * time.Second
-				time.Sleep(randomDelay)
+	for {
+		for i := 1; i < 4; i++ {
+			maxDelay := float64(metric.TestTimeInterval) * metric.SpreadFactor
+			minDelay := 0.1 // minimum base delay in seconds
+			randomFactor := minDelay + rand.Float64()*(maxDelay-minDelay)
+			backoff := math.Pow(randomFactor, float64(i))
+			randomDelay := time.Duration(backoff) * time.Second
+			time.Sleep(randomDelay)
 
-				metric.Value = metric.method(metric.TargetNodeIp)
+			metric.Value = metric.method(metric.TargetNodeIp)
 
-				if metric.Value != 0 {
-					break
-				}
-				log.Infof("Couldn't measure %s between node %s and node %s. Trying again.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
+			if metric.Value != 0 {
+				break
 			}
-
-			log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
-
-			time.Sleep(time.Duration(metric.TestTimeInterval) * time.Minute)
+			log.Infof("Couldn't measure %s between node %s and node %s. Trying again.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
 		}
+
+		log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
+
+		time.Sleep(time.Duration(metric.TestTimeInterval) * time.Minute)
 	}
 
 }
