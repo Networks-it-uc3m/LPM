@@ -21,3 +21,4 @@ global:
   network:
     name: lpm-network
   namespace: default
+  spreadFactor: 0.2
