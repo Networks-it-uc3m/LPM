@@ -1,13 +1,14 @@
 package main
 
 import (
+	lpmv1 "github.com/Networks-it-uc3m/LPM/api/v1"
 	"github.com/Networks-it-uc3m/LPM/pkg/collector"
 )
 
 func main() {
 
 	// Load configuration from config.json file
-	configuration, _ := loadConfiguration()
+	configuration, _ := lpmv1.LoadConfiguration()
 
 	// Load core instance of the lpm app, that has the core utilites of running the metric tests, launching the according prometheus collectors and registries
 	lpmInstance := collector.GetInstance()

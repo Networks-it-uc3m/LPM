@@ -1,4 +1,4 @@
-package main
+package v1
 
 import (
 	"encoding/json"
@@ -21,7 +21,7 @@ type NodeConfig struct {
 	MetricsNeighbourNodes []MetricConfiguration `json:"MetricsNeighbourNodes"`
 }
 
-func loadConfiguration() (NodeConfig, error) {
+func LoadConfiguration() (NodeConfig, error) {
 
 	file, err := os.Open("config.json")
 
