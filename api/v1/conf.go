@@ -2,8 +2,10 @@ package v1
 
 import (
 	"encoding/json"
-	"fmt"
-	"os"
+)
+
+const (
+	DEFAULT_CONFIG_FILE = "/etc/l2sm/lpm-config.json"
 )
 
 type MetricConfiguration struct {
@@ -19,27 +21,6 @@ type NodeConfig struct {
 	NodeName              string                `json:"Nodename"`
 	SpreadFactor          float64               `json:"spreadFactor,omitempty"`
 	MetricsNeighbourNodes []MetricConfiguration `json:"MetricsNeighbourNodes"`
-}
-
-func LoadConfiguration() (NodeConfig, error) {
-
-	file, err := os.Open("config.json")
-
-	if err != nil {
-		return NodeConfig{}, err
-	}
-	defer file.Close()
-
-	decoder := json.NewDecoder(file)
-	configuration := NodeConfig{}
-	err = decoder.Decode(&configuration)
-
-	fmt.Println("Decoded Config Data:")
-	fmt.Printf("%v+", configuration)
-	// for _, cfg := range configuration {
-	// 	//fmt.Printf("IP: %s, RTT: %d, Jitter: %d, Throughput: %d\n", cfg.IP, cfg.RTT, cfg.Jitter, cfg.Throughput)
-	// }
-	return configuration, nil
 }
 
 func (conf *MetricConfiguration) UnmarshalJSON(data []byte) error {
