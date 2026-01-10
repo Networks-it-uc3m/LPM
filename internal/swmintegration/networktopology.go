@@ -161,7 +161,7 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 		if metric.Value != 0 {
 			switch metric.Name {
 			case "net_rtt_ms":
-				latencyNanos := fmt.Sprintf("%f", metric.Value) // save in miliseconds
+				latencyNanos := fmt.Sprintf("%f", metric.Value*1000000) // save in nanoseconds
 				link.Capabilities.LatencyNanos = latencyNanos
 			case "net_throughput_kbps":
 				bandWidthBits := fmt.Sprintf("%fM", metric.Value*0.0009765625) // From kbps to Mbps

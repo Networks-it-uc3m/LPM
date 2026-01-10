@@ -7,7 +7,7 @@ data:
   config.json: |
     {
       "Nodename": "{{ .name  }}",
-      "SpreadFactor"_ "{{ .spreadFactor }}",
+      "SpreadFactor": "{{ .spreadFactor }}",
       "MetricsNeighbourNodes": [
         {{- $root := . }}
         {{- $first := true }}
