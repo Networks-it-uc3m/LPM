@@ -5,7 +5,7 @@ import (
 )
 
 const (
-	DEFAULT_CONFIG_FILE = "/etc/l2sm/lpm-config.json"
+	DEFAULT_CONFIG_FILE = "/etc/lpm/lpm-config.json"
 )
 
 type MetricConfiguration struct {
