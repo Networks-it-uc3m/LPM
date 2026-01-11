@@ -20,6 +20,7 @@ type MetricConfiguration struct {
 type NodeConfig struct {
 	NodeName              string                `json:"Nodename"`
 	SpreadFactor          float64               `json:"spreadFactor,omitempty"`
+	IpAddress             string                `json:"ipAddress,omitempty"`
 	MetricsNeighbourNodes []MetricConfiguration `json:"MetricsNeighbourNodes"`
 }
 
