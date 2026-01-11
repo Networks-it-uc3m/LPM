@@ -39,7 +39,11 @@ Example:
 			return
 		}
 		// Load configuration from config.json file
-		configuration, _ := LoadConfiguration(cf)
+		configuration, err := LoadConfiguration(cf)
+		if err != nil {
+			fmt.Println("Error loading configuration file. Error:", err)
+			return
+		}
 
 		// Load core instance of the lpm app, that has the core utilites of running the metric tests, launching the according prometheus collectors and registries
 		lpmInstance := collector.GetInstance()
