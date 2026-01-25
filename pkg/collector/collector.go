@@ -1,7 +1,6 @@
 package collector
 
 import (
-	"math"
 	"math/rand"
 	"net/http"
 	"time"
@@ -44,11 +43,11 @@ func (metric *Metric) RunPeriodicTests() {
 
 	for {
 		for i := 1; i < 4; i++ {
-			maxDelay := float64(metric.TestTimeInterval) * metric.SpreadFactor
-			minDelay := 0.1 // minimum base delay in seconds
-			randomFactor := minDelay + rand.Float64()*(maxDelay-minDelay)
-			backoff := math.Pow(randomFactor, float64(i))
-			randomDelay := time.Duration(backoff) * time.Second
+			maxDelay := (time.Duration(metric.TestTimeInterval) * time.Minute) * time.Duration(metric.SpreadFactor*10) / 10
+			minDelay := time.Second
+			randomFactor := minDelay + time.Duration(rand.Float64()*10)*(maxDelay-minDelay)/10
+			jitter := time.Duration(1<<i) * time.Duration(10*(rand.Float64()*1.0+0.5)) / 10 * time.Second
+			randomDelay := jitter + randomFactor
 			time.Sleep(randomDelay)
 
 			metric.Value = metric.method(metric.TargetNodeIp)
