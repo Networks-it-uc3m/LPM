@@ -56,7 +56,7 @@ func (metric *Metric) RunPeriodicTests() {
 			if metric.Value != 0 {
 				break
 			}
-			log.Infof("Couldn't measure %s between node %s and node %s. Trying again.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
+			log.Infof("Couldn't measure %s between node %s and node %s. Trying again.", metric.Name, metric.SourceNodeName, metric.TargetNodeName)
 		}
 
 		log.Infof(" %s between node %s and node %s is %f.", metric.Name, metric.SourceNodeName, metric.TargetNodeName, metric.Value)
