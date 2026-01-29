@@ -15,7 +15,7 @@ func measureRtt(neighborIP string) float64 {
 
 	log.Infof("Measuring rtt")
 
-	out, err := exec.Command("ping", neighborIP, "-c", "10", "-q").Output()
+	out, err := exec.Command("ping", neighborIP, "-c", "10", "-I", "l2probe0", "-q").Output()
 	if err != nil {
 		log.Errorf("Could not measure Rtt against ip %s. Ping responds: %v", neighborIP, err)
 		return 0
@@ -46,7 +46,7 @@ func measureJitter(neighborIP string) float64 {
 
 	log.Infof("Measuring jitter")
 
-	out, err := exec.Command("iperf3", "-u", "-p", "5202", "-c", neighborIP).Output()
+	out, err := exec.Command("iperf3", "-u", "-p", "5202", "-c", neighborIP, "--bind-dev", "l2probe0").Output()
 	if err != nil {
 		log.Errorf("Could not measure Jitter. %v", err)
 		return 0
@@ -93,7 +93,7 @@ func measureJitter(neighborIP string) float64 {
 func measureThroughput(neighborIP string) float64 {
 	log.Infof("Measuring throughput")
 
-	out, err := exec.Command("iperf3", "-c", neighborIP, "--format", "k").Output()
+	out, err := exec.Command("iperf3", "-c", neighborIP, "--format", "k", "--bind-dev", "l2probe0").Output()
 	if err != nil {
 		log.Errorf("Could not measure Throughput. %v", err)
 		return 0
