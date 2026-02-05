@@ -103,7 +103,7 @@ func GenerateTopologyFromMetrics(metricArray []collector.MetricData) (NetworkTop
 		},
 		Spec: NetworkTopologySpec{
 			NetworkImplementation: "L2SM",
-			PhysicalBase:          "K8s",
+			PhysicalBase:          "",
 		},
 	}
 
