@@ -1,4 +1,6 @@
 FROM golang:1.21 AS build
+ARG TARGETOS
+ARG TARGETARCH
 
 WORKDIR /usr/src/lpm
 
@@ -8,7 +10,7 @@ RUN go mod download
 
 COPY . ./
 
-RUN go build -o /usr/local/bin/lpm 
+RUN CGO_ENABLED=0 GOOS=${TARGETOS:-linux} GOARCH=${TARGETARCH} go build -a -o /usr/local/bin/lpm 
 
 FROM ubuntu:latest
 
