@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-type MeasureMethod func(targetNodeIP string) float64
+type MeasureMethod func(targetNodeIP, probeInterface string) float64
 
 type MetricId struct {
 	Name           string

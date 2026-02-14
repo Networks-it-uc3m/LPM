@@ -21,6 +21,7 @@ type NodeConfig struct {
 	NodeName              string                `json:"Nodename"`
 	SpreadFactor          float64               `json:"spreadFactor,omitempty"`
 	IpAddress             string                `json:"ipAddress,omitempty"`
+	ProbeInterface        string                `json:"probeInterface,omitempty"`
 	MetricsNeighbourNodes []MetricConfiguration `json:"MetricsNeighbourNodes"`
 }
 

@@ -11,11 +11,11 @@ import (
 
 /** The purpose of this file is to save all the measuring methods, that will be set as arguments in the AddMetrics function
 **/
-func measureRtt(neighborIP string) float64 {
+func measureRtt(neighborIP string, probeInterface string) float64 {
 
 	log.Infof("Measuring rtt")
 
-	out, err := exec.Command("ping", neighborIP, "-c", "10", "-I", "l2probe0", "-q").Output()
+	out, err := exec.Command("ping", neighborIP, "-c", "10", "-I", probeInterface, "-q").Output()
 	if err != nil {
 		log.Errorf("Could not measure Rtt against ip %s. Ping responds: %v", neighborIP, err)
 		return 0
@@ -42,11 +42,11 @@ func measureRtt(neighborIP string) float64 {
 	return rtt
 }
 
-func measureJitter(neighborIP string) float64 {
+func measureJitter(neighborIP string, probeInterface string) float64 {
 
 	log.Infof("Measuring jitter")
 
-	out, err := exec.Command("iperf3", "-u", "-p", "5202", "-c", neighborIP, "--bind-dev", "l2probe0").Output()
+	out, err := exec.Command("iperf3", "-u", "-p", "5202", "-c", neighborIP, "--bind-dev", probeInterface).Output()
 	if err != nil {
 		log.Errorf("Could not measure Jitter. %v", err)
 		return 0
@@ -90,10 +90,10 @@ func measureJitter(neighborIP string) float64 {
 	return 0
 }
 
-func measureThroughput(neighborIP string) float64 {
+func measureThroughput(neighborIP string, probeInterface string) float64 {
 	log.Infof("Measuring throughput")
 
-	out, err := exec.Command("iperf3", "-c", neighborIP, "--format", "k", "--bind-dev", "l2probe0").Output()
+	out, err := exec.Command("iperf3", "-c", neighborIP, "--format", "k", "--bind-dev", probeInterface).Output()
 	if err != nil {
 		log.Errorf("Could not measure Throughput. %v", err)
 		return 0
@@ -132,10 +132,10 @@ func measureThroughput(neighborIP string) float64 {
 //////////////// SERVER METHODS //////////////////////////
 //////////////////////////////////////////////////////////
 
-func iperfTCP() {
-	exec.Command("iperf3", "-s", "-p", "5201").Run()
+func iperfTCP(probeInterface string) {
+	exec.Command("iperf3", "-s", "-p", "5201", "--bind-dev", probeInterface).Run()
 }
 
-func iperfUDP() {
-	exec.Command("iperf3", "-s", "-p", "5202").Run()
+func iperfUDP(probeInterface string) {
+	exec.Command("iperf3", "-s", "-p", "5202", "--bind-dev", probeInterface).Run()
 }

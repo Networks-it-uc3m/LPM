@@ -13,13 +13,13 @@ func StartCollector() {
 
 	for index := range lpmInstance.Metrics {
 		go func(lpmDataIndex int) {
-			lpmInstance.Metrics[lpmDataIndex].RunPeriodicTests()
+			lpmInstance.Metrics[lpmDataIndex].RunPeriodicTests(lpmInstance.ProbeInterface)
 		}(index)
 	}
 
 	for index := range lpmInstance.Servers {
 		go func(lpmDataIndex int) {
-			lpmInstance.Servers[lpmDataIndex]()
+			lpmInstance.Servers[lpmDataIndex](lpmInstance.ProbeInterface)
 		}(index)
 	}
 	handler := promhttp.HandlerFor(
@@ -33,7 +33,7 @@ func StartCollector() {
 	http.ListenAndServe(":8090", nil)
 }
 
-func (metric *Metric) RunPeriodicTests() {
+func (metric *Metric) RunPeriodicTests(probeInterface string) {
 
 	if metric.TestTimeInterval == -1 {
 		return
@@ -50,7 +50,7 @@ func (metric *Metric) RunPeriodicTests() {
 			randomDelay := jitter + randomFactor
 			time.Sleep(randomDelay)
 
-			metric.Value = metric.method(metric.TargetNodeIp)
+			metric.Value = metric.method(metric.TargetNodeIp, probeInterface)
 
 			if metric.Value != 0 {
 				break

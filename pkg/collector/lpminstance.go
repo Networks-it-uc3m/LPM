@@ -9,14 +9,15 @@ import (
 
 const SF_DEFAULT_VALUE = 0.2
 
-type ServerMethod func()
+type ServerMethod func(probeInterface string)
 
 type LPMInstance struct {
-	NodeName     string
-	promReg      *prometheus.Registry
-	Metrics      []Metric
-	Servers      []ServerMethod
-	SpreadFactor float64
+	ProbeInterface string
+	NodeName       string
+	promReg        *prometheus.Registry
+	Metrics        []Metric
+	Servers        []ServerMethod
+	SpreadFactor   float64
 }
 
 var lock = &sync.Mutex{}
@@ -54,6 +55,9 @@ func (lpmInstance *LPMInstance) SetSpreadFactor(sf float64) {
 		lpmInstance.SpreadFactor = SF_DEFAULT_VALUE
 
 	}
+}
+func (lpmInstance *LPMInstance) SetProbingInterface(probeInterface string) {
+	lpmInstance.ProbeInterface = probeInterface
 }
 
 func (lpmInstance *LPMInstance) AddMetric(metricName string, targetNodeName string, metricInterval int, targetNodeIP string, measureMethod MeasureMethod) {
