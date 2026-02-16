@@ -6,7 +6,9 @@ package cmd
 import (
 	"encoding/json"
 	"fmt"
+	"net"
 	"os"
+	"time"
 
 	lpmv1 "github.com/Networks-it-uc3m/LPM/api/v1"
 
@@ -48,6 +50,9 @@ Example:
 		// Load core instance of the lpm app, that has the core utilites of running the metric tests, launching the according prometheus collectors and registries
 		lpmInstance := collector.GetInstance()
 
+		if err := waitForProbeInterface(configuration.ProbeInterface, 12, 10*time.Second); err != nil {
+			panic(err)
+		}
 		// We set the instance node name. This is useful for the correct identification of the metrics.
 		lpmInstance.SetNodeName(configuration.NodeName)
 
@@ -103,4 +108,24 @@ func LoadConfiguration(fd string) (lpmv1.NodeConfig, error) {
 	// 	//fmt.Printf("IP: %s, RTT: %d, Jitter: %d, Throughput: %d\n", cfg.IP, cfg.RTT, cfg.Jitter, cfg.Throughput)
 	// }
 	return configuration, nil
+}
+
+func waitForProbeInterface(probeInterface string, maxRetries int, retryDelay time.Duration) error {
+	if probeInterface == "" {
+		return fmt.Errorf("configuration value probeInterface is empty")
+	}
+
+	for retry := 1; retry <= maxRetries; retry++ {
+		if _, err := net.InterfaceByName(probeInterface); err == nil {
+			fmt.Printf("Probe interface %q is available.\n", probeInterface)
+			return nil
+		}
+
+		if retry < maxRetries {
+			fmt.Printf("Probe interface %q not found. Retry %d/%d in %s.\n", probeInterface, retry, maxRetries, retryDelay)
+			time.Sleep(retryDelay)
+		}
+	}
+
+	return fmt.Errorf("probe interface %q not found after %d retries", probeInterface, maxRetries)
 }
