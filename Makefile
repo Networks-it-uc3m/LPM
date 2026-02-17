@@ -1,4 +1,4 @@
-VERSION ?= 1.2.4
+VERSION ?= 1.2.6
 IMG ?= alexdecb/lpm:$(VERSION)
 
 LOCALBIN ?= $(shell pwd)/bin
